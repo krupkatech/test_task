@@ -1,6 +1,5 @@
 /// <reference types="cypress" />
 
-import { isTypedArray } from "cypress/types/lodash"
 import { getRandomMessage } from "../utils/message"
 
 describe('Sending message - happy path', () => {
@@ -22,9 +21,7 @@ describe('Sending message - happy path', () => {
     cy.get('[name="your-subject"]').type(message.subject)
     cy.get('[name="your-message"]').type(message.text)
 
-    cy.wait(3000)
-
-    //code source: https://stackoverflow.com/questions/63793801/click-on-recaptcha-cypress-version-3-8
+    //źródło kodu: https://stackoverflow.com/questions/63793801/click-on-recaptcha-cypress-version-3-8
     cy.get('[title="reCAPTCHA"]')
       .its('0.contentDocument.body')
       .should('be.visible')
@@ -34,8 +31,11 @@ describe('Sending message - happy path', () => {
       .should('be.visible')
       .click()
 
-    cy.wait(1000)
-    //cy.get('[type="submit"]').click()
+    cy.get('[type="submit"]').click()
+    
+    //zadziała tylko jeśli captcha przepuści test od razu (czyli nie wyświetli się dodatkowa warstwa weryfikacji przeciwko botom)
+    cy.get('#wpcf7-not-valid-tip').should('not.be.visible')
+    cy.get('#wpcf7-response-output').should('contain.text', 'Dziękujemy, wiadomość została wysłana.')
 
   })
 
